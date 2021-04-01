@@ -1,6 +1,14 @@
 # Opsgrid
 
-## Overview
+Opsgrid was a simple hosted server monitoring service that stored data in users' Google Sheets.
+The [old homepage](https://web.archive.org/web/20210119181448/https://www.opsgrid.net/) has more information.
+
+It worked reasonably well, but I didn't want to maintain it after moving to a more sophisticated setup.
+
+This repo has the code as-is, including infra/deployment tooling.
+The only exception is secrets, which used to be encrypted and checked in using transcrypt; they're just stubbed out in this repo.
+
+## Technical Overview
 
 There's two pieces to Opsgrid:
 * ingest: a node app that receives telegraf metric requests and posts them to Google Sheets
