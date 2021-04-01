@@ -1,0 +1,4 @@
+*
+!requirements.txt
+!pack-dist/
+!docker-archive.tar

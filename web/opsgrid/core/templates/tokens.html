@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Account Tokens</h1>
+<p>
+<a class="btn btn-primary" role="button" href="{% url 'token-hnew' %}">Add a new token</a>
+</p>
+
+{% if ingesttokens %}
+<p>
+Configure an existing token:
+</p>
+<ul>
+    {% for ingesttoken in ingesttokens %}
+    <li>
+      <a href="{% url 'token-hretrieve' pk=ingesttoken.pk %}">{{ ingesttoken.socialaccount }} ({{ ingesttoken.value }})</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock content %}

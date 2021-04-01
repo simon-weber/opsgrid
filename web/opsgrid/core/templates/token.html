@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load rest_framework %}
+{% block content %}
+{% if ingesttoken %}
+        <form action="{% url 'token-hpatch' pk=ingesttoken.pk %}" method="POST">
+{% else %}
+        <form action="{% url 'token-hcreate' %}" method="POST">
+{% endif %}
+            {% csrf_token %}
+            {% render_form serializer %}
+            <a href="{% url 'token-hlist' %}">back</a>
+{% if ingesttoken %}
+<input type="submit" class="btn btn-danger" value="Delete" formaction="{% url 'token-hdestroy' pk=ingesttoken.pk %}">
+        {% endif %}
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </form>
+{% endblock content %}

@@ -1,0 +1,7 @@
+-r requirements.txt
+ansible==2.8.2
+black
+flake8
+isort
+pip-tools
+pre-commit

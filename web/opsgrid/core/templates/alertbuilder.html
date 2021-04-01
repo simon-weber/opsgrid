@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load rest_framework %}
+{% load static %}
+
+{% block content %}
+<div id="root"></div>
+{% if alert %}
+        <form id="alert-form" action="{% url 'alert-hpatch' pk=alert.pk %}" method="POST">
+{% else %}
+        <form id="alert-form" action="{% url 'alert-hcreate' %}" method="POST">
+{% endif %}
+            {% csrf_token %}
+            {% render_form serializer %}
+            <a href="{% url 'alert-hlist' %}">back</a>
+{% if alert %}
+<input type="submit" class="btn btn-danger" value="Delete" formaction="{% url 'alert-hdestroy' pk=alert.pk %}">
+        {% endif %}
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </form>
+{% endblock content %}
+
+
+{% block post_body %}
+{{ alert_fields|json_script:"alert-fields" }}
+{{ alert.jsonlogic|json_script:"alert-jsonlogic" }}
+
+<script>
+  window.alertJsonLogic = JSON.parse(document.getElementById('alert-jsonlogic').textContent);
+  window.alertFields = JSON.parse(document.getElementById('alert-fields').textContent);
+  console.log("alertJsonLogic", window.alertJsonLogic)
+  console.log("alertFields", window.alertFields)
+</script>
+<script src="{% static "main.js" %}"></script>
+{% endblock post_body %}
+

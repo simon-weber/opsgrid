@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+{% block navbar %}
+{% endblock navbar %}
+{% block header %}
+<div class="jumbotron">
+  <div class="container text-center landing">
+    <div class="col-md-12">
+      <h1><span style="font-size: smaller">Opsgrid</span></h1>
+      <h1>Server metrics &rarr; Google Sheets</h1>
+      <h4 style="padding-top: 1em; padding-bottom: 1em">
+        Free while in beta!
+      </h4>
+      <a type="button" class="btn btn-lg btn-primary" href="{% url 'account_signup' %}">Sign up</a>
+      <a style="margin-left: 1em" type="button" class="btn btn-lg btn-default" href="{% url 'account_login' %}">Log in</a>
+    </div>
+  </div>
+</div>
+
+<div class="container text-center landing">
+    <div class="row">
+        <div class="col-md-12">
+          <h4>
+            Tired of expensive and complicated monitoring services?
+            With Opsgrid, your metrics are just a spreadsheet:
+          </h4>
+        </div>
+        <div class="col-md-10 col-md-offset-1" style="padding-top: 1em">
+          <div class="embed-responsive embed-responsive-16by9">
+            <iframe frameborder="0" src="{% static "core/example_sheet.html" %}" seamless></iframe>
+          </div>
+        </div>
+          {% comment %}
+          <iframe width='100%' height='500' src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQcmxv42DwbKWwFwmZPh6t6TVDEs_Eub5r5TnTd4opU92o7MfWxry5U37D-ldb3pwWq2joD8DMK2U9m/pubhtml?gid=1762959356&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+          {% endcomment %}
+        </div>
+    </div>
+</div>
+
+<div class="container landing" style="padding-top: 3.5em; padding-bottom: 3.5em">
+    <div class="row">
+        <div class="col-md-12 text-center">
+          <h2>How it works</h2>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div style="padding: 1em">
+          <h3>1: Telegraf collects your metrics</h3>
+          <p>
+          Opsgrid is designed for use with <a href="https://www.influxdata.com/time-series-platform/telegraf/">Telegraf</a>, an open source server agent.
+          You configure it to collect what you'd like to monitor and send your metrics to Opsgrid.
+          </p>
+        </div>
+        <div style="padding: 1em">
+          <h3>2: Opsgrid checks your alerts</h3>
+          <p>
+          When Opsgrid receives metrics it checks each row against alert conditions you specify.
+          If any host's status has changed, it emails you.
+          </p>
+        </div>
+        <div style="padding: 1em">
+          <h3>3: Opsgrid writes to your spreadsheets</h3>
+          <p>
+          Each row is written with its Telegraf timestamp to Google Sheets like the example above.
+          Each Telegraf host - a server, database, container, etc - has its data written to a separate spreadsheet, created as needed.
+          </p>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="container">
+  <div class="landing">
+    <div class="col-md-12 p-3 text-center">
+      <h2>
+        Why use Opsgrid?
+      </h2>
+    </div>
+
+    <div class="row p-3">
+      <div class="col-md-8">
+        <h3>
+          Save money
+        </h3>
+        <p>
+        Opsgrid will be priced much lower than competitors since it doesn't need to store your data.
+        </p>
+      </div>
+      <div class="visible-md-block visible-lg-block col-md-4 text-center">
+        <i class="dollar-icon" style="font-size:6em;"></i>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="row p-3">
+      <div class="visible-md-block visible-lg-block col-md-4 text-center">
+        <i class="database-icon" style="font-size:6em;"></i>
+      </div>
+      <div class="col-md-8">
+        <h3>
+          Increase retention
+        </h3>
+        <p>
+        Store per-host data up to Google's limits, about 1 year of per-minute rows at 10 columns.
+        </p>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="row p-3">
+      <div class="col-md-8">
+        <h3>
+          Eliminate lock-in
+        </h3>
+        <p>
+        Your data is always yours, and you can easily migrate to any provider that supports a Telegraf output format.
+        </p>
+      </div>
+      <div class="visible-md-block visible-lg-block col-md-4 text-center">
+        <i class="unlock-icon" style="font-size:6em;"></i>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="row p-3">
+      <div class="visible-md-block visible-lg-block col-md-4 text-center">
+        <i class="bar-chart-icon" style="font-size:6em;"></i>
+      </div>
+      <div class="col-md-8">
+        <h3>
+          Simplify analysis
+        </h3>
+        <p>
+        Easily analyze, embed, and download your data using Google Sheet's built-in features.
+        </p>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="row p-3">
+      <div class="col-md-8">
+        <h3>
+          Track more metrics
+        </h3>
+        <p>
+        A wide range of metric sources are supported by Telegraf's <a href="https://github.com/influxdata/telegraf#input-plugins">open source input plugins</a>.
+        </p>
+      </div>
+      <div class="visible-md-block visible-lg-block col-md-4 text-center">
+        <i class="cogs-icon" style="font-size:6em;"></i>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock header %}

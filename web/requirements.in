@@ -1,0 +1,10 @@
+django-allauth
+django-amazon-ses
+django-bootstrap-form
+django<3
+djangorestframework
+google-auth
+google-measurement-protocol
+gunicorn[gevent]
+newrelic
+sentry-sdk

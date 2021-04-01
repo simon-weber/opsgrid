@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Alerts</h1>
+<p>
+Select a host to add an alert for it:
+</p>
+<ul>
+    {% for host in hosts %}
+    <li>
+      <a href="{% url 'alert-hnew'  %}?host={{ host.pk }}">{{ host }}</a>
+    </li>
+    {% endfor %}
+</ul>
+<p>
+Or, <a href="{% url 'alert-hnew'  %}">add an alert that applies to all hosts</a>.
+</p>
+
+{% if alerts %}
+<p>
+Configure an existing alert:
+</p>
+<ul>
+    {% for alert in alerts %}
+    <li>
+      <a href="{% url 'alert-hretrieve' pk=alert.pk %}">{{ alert }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock content %}

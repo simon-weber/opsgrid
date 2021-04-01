@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Set up a host</h1>
+<p>
+Hosts are registered with Opsgrid automatically once metrics are received.
+There are two steps involved: installing Telegraf and configuring it.
+</p>
+<h3>step 1: install Telegraf</h3>
+<p>
+Telegraf provides instructions for installation <a target="_blank" href="https://docs.influxdata.com/telegraf/v1.14/introduction/installation/#installation">via package manager</a>,
+<a target="_blank" href="https://github.com/influxdata/telegraf#installation">from source</a>, and <a href="https://hub.docker.com/_/telegraf">with Docker</a>.
+In a typical server monitoring setup you'll install it on every host you'd like to monitor.
+</p>
+
+<h3>step 2: configure Telegraf</h3>
+<p>
+Once Telegraf is installed, you need to configure it to send metrics to Opsgrid.
+Below is an example Opsgrid-compatible Telegraf config that can be copied and pasted into <code>/etc/telegraf/telegraf.conf</code>.
+</p>
+<noscript>
+<style type="text/css">
+#tokenSelectForm { display:none; }
+</style>
+</noscript>
+<p id="tokenSelectForm">
+Google Account (token):
+<select id="tokenSelect" class="form-control">
+  {% for ingesttoken in ingesttokens %}
+  <option value="{{ ingesttoken.value }}">{{ ingesttoken.socialaccount }} ({{ ingesttoken.value }})</option>
+  {% endfor %}
+</select>
+<script type="text/javascript">
+  document.getElementById('tokenSelect').addEventListener('change', function() {
+    document.getElementById('ingestTokenValue').textContent = this.value;
+  });
+</script>
+</p>
+<p>
+<pre><code>{% include 'telegraf.config' %}</code></pre>
+</p>
+<p>
+For a complete reference of Telegraf configuration options see <a href="https://docs.influxdata.com/telegraf/v1.14/administration/configuration/">their docs</a>.
+<a href="https://github.com/influxdata/telegraf#documentation">Their GitHub page</a> also has a nice reference of plugins.
+</p>
+<p>
+Once your first metrics have been received you'll see an opsgrid folder in your Google Drive containing your spreadsheet.
+You may want to visit <a href="{% url 'dashboard' %}">your dashboard</a> next to add some alerts.
+</p>
+{% comment %}
+<p>
+You can easily test from a live system at the <a href="https://rootnroll.com/d/telegraf/">Telegraf playground</a>.
+Just paste this config into <code>/etc/telegraf/telegraf.conf</code> then run <code>telegraf</code> and wait a minute.
+</p>
+<p>
+You can also send a simple static test with curl:
+<pre><code>curl -d '{"fields": {"field_1": 1, "field_2": 2}, "name": "metric", "tags": {"host": "example"}, "timestamp": 123 }' -H "Content-Type: application/json" -H "X-Opsgrid-IngestToken: {{ ingesttokens.0.value }}" -X POST https://ingest.opsgrid.net/telegraf</code></pre>
+</p>
+
+For more details on setting up, visit <a href="{% url 'docs' %}">the documentation</a>.
+{% endcomment %}
+{% endblock content %}

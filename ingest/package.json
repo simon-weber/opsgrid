@@ -1,0 +1,45 @@
+{
+  "name": "ingest",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@sentry/node": "^5.17.0",
+    "core-js": "^3.6.2",
+    "fastify": "^2.11.0",
+    "fastify-graceful-shutdown": "^2.0.1",
+    "google-auth-library": "^6.0.6",
+    "googleapis": "^39.2.0",
+    "json-logic-js": "^1.2.2",
+    "measurement-protocol": "^0.1.1",
+    "newrelic": "^6.13.0",
+    "node-fetch": "^2.6.0",
+    "rate-limiter-flexible": "^2.1.7",
+    "regenerator-runtime": "^0.13.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@google/clasp": "^2.3.0",
+    "babel-loader": "^8.0.6",
+    "copy-webpack-plugin": "^5.1.1",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "string-replace-loader": "^2.2.0",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  },
+  "scripts": {
+    "lint": "eslint --fix *.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "pack-gas": "rm -rf dist && webpack --config webpack.gas.js",
+    "deploy-gas": "npm run pack-gas && cd dist && clasp push"
+  },
+  "author": "Simon Weber",
+  "license": "UNLICENSED"
+}

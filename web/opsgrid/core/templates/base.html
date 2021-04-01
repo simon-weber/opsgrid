@@ -1,0 +1,232 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>{% block head_title %}Opsgrid{% endblock %}</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/core/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/core/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/core/favicon-16x16.png">
+    <link rel="manifest" href="/assets/core/site.webmanifest">
+    <link rel="mask-icon" href="/assets/core/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/assets/core/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="/assets/core/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta property="og:type" content="website">
+		<meta property="og:image:width" content="1648">
+		<meta property="og:image:height" content="863">
+		<meta property="og:title" content="Opsgrid">
+		<meta property="og:description" content="Server/application alerting with metrics stored in Google Sheets.">
+		<meta property="og:url" content="https://www.opsgrid.net">
+		<meta property="og:image" content="https://www.opsgrid.net/assets/core/og-image.jpg">
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    {% comment %}
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    {% endcomment %}
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-169365761-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-169365761-1');
+    </script>
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+	<style>
+		/* Always show the scrollbar, avoiding flickering content. */
+		html {
+			overflow-y: scroll;
+		}
+
+		/* fix navbar-text indentation on mobile: http://stackoverflow.com/a/20411963 */
+		@media (max-width: 767px) {    
+			p.navbar-text {
+				margin: 0;
+				padding: 10px 15px;
+			}
+			.navbar li {
+				overflow: hidden;
+			}
+		}
+
+		/* Make the container smaller on large screens when logged in. */
+		@media (min-width: 768px) {
+			.container:not(.landing) {
+				width: 768px;
+			}
+		}
+
+    /* slightly larger text on the landing page */
+    .landing p {
+      font-size: 16px;
+    }
+
+        /* icons */
+        /* upload from https://github.com/encharm/Font-Awesome-SVG-PNG to https://www.base64-image.de */
+		.user-icon {
+			width: 1em;
+			height: 1em;
+			background-size: cover;
+			background-repeat: no-repeat;
+			display: inline-block;
+			background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxNzkyIiB2aWV3Qm94PSIwIDAgMTc5MiAxNzkyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xNTM2IDEzOTlxMCAxMDktNjIuNSAxODd0LTE1MC41IDc4aC04NTRxLTg4IDAtMTUwLjUtNzh0LTYyLjUtMTg3cTAtODUgOC41LTE2MC41dDMxLjUtMTUyIDU4LjUtMTMxIDk0LTg5IDEzNC41LTM0LjVxMTMxIDEyOCAzMTMgMTI4dDMxMy0xMjhxNzYgMCAxMzQuNSAzNC41dDk0IDg5IDU4LjUgMTMxIDMxLjUgMTUyIDguNSAxNjAuNXptLTI1Ni04ODdxMCAxNTktMTEyLjUgMjcxLjV0LTI3MS41IDExMi41LTI3MS41LTExMi41LTExMi41LTI3MS41IDExMi41LTI3MS41IDI3MS41LTExMi41IDI3MS41IDExMi41IDExMi41IDI3MS41eiIvPjwvc3ZnPg==');
+			top: .125em;
+			position: relative;
+		}
+
+		.cogs-icon {
+			width: 1.125em;
+			height: 1em;
+			background-size: cover;
+			background-repeat: no-repeat;
+			display: inline-block;
+			background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB3aWR0aD0iMjA0OCIgaGVpZ2h0PSIxNzkyIiB2aWV3Qm94PSIwIDAgMjA0OCAxNzkyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik05NjAgODk2cTAtMTA2LTc1LTE4MXQtMTgxLTc1LTE4MSA3NS03NSAxODEgNzUgMTgxIDE4MSA3NSAxODEtNzUgNzUtMTgxem03NjggNTEycTAtNTItMzgtOTB0LTkwLTM4LTkwIDM4LTM4IDkwcTAgNTMgMzcuNSA5MC41dDkwLjUgMzcuNSA5MC41LTM3LjUgMzcuNS05MC41em0wLTEwMjRxMC01Mi0zOC05MHQtOTAtMzgtOTAgMzgtMzggOTBxMCA1MyAzNy41IDkwLjV0OTAuNSAzNy41IDkwLjUtMzcuNSAzNy41LTkwLjV6bS0zODQgNDIxdjE4NXEwIDEwLTcgMTkuNXQtMTYgMTAuNWwtMTU1IDI0cS0xMSAzNS0zMiA3NiAzNCA0OCA5MCAxMTUgNyAxMSA3IDIwIDAgMTItNyAxOS0yMyAzMC04Mi41IDg5LjV0LTc4LjUgNTkuNXEtMTEgMC0yMS03bC0xMTUtOTBxLTM3IDE5LTc3IDMxLTExIDEwOC0yMyAxNTUtNyAyNC0zMCAyNGgtMTg2cS0xMSAwLTIwLTcuNXQtMTAtMTcuNWwtMjMtMTUzcS0zNC0xMC03NS0zMWwtMTE4IDg5cS03IDctMjAgNy0xMSAwLTIxLTgtMTQ0LTEzMy0xNDQtMTYwIDAtOSA3LTE5IDEwLTE0IDQxLTUzdDQ3LTYxcS0yMy00NC0zNS04MmwtMTUyLTI0cS0xMC0xLTE3LTkuNXQtNy0xOS41di0xODVxMC0xMCA3LTE5LjV0MTYtMTAuNWwxNTUtMjRxMTEtMzUgMzItNzYtMzQtNDgtOTAtMTE1LTctMTEtNy0yMCAwLTEyIDctMjAgMjItMzAgODItODl0NzktNTlxMTEgMCAyMSA3bDExNSA5MHEzNC0xOCA3Ny0zMiAxMS0xMDggMjMtMTU0IDctMjQgMzAtMjRoMTg2cTExIDAgMjAgNy41dDEwIDE3LjVsMjMgMTUzcTM0IDEwIDc1IDMxbDExOC04OXE4LTcgMjAtNyAxMSAwIDIxIDggMTQ0IDEzMyAxNDQgMTYwIDAgOC03IDE5LTEyIDE2LTQyIDU0dC00NSA2MHEyMyA0OCAzNCA4MmwxNTIgMjNxMTAgMiAxNyAxMC41dDcgMTkuNXptNjQwIDUzM3YxNDBxMCAxNi0xNDkgMzEtMTIgMjctMzAgNTIgNTEgMTEzIDUxIDEzOCAwIDQtNCA3LTEyMiA3MS0xMjQgNzEtOCAwLTQ2LTQ3dC01Mi02OHEtMjAgMi0zMCAydC0zMC0ycS0xNCAyMS01MiA2OHQtNDYgNDdxLTIgMC0xMjQtNzEtNC0zLTQtNyAwLTI1IDUxLTEzOC0xOC0yNS0zMC01Mi0xNDktMTUtMTQ5LTMxdi0xNDBxMC0xNiAxNDktMzEgMTMtMjkgMzAtNTItNTEtMTEzLTUxLTEzOCAwLTQgNC03IDQtMiAzNS0yMHQ1OS0zNCAzMC0xNnE4IDAgNDYgNDYuNXQ1MiA2Ny41cTIwLTIgMzAtMnQzMCAycTUxLTcxIDkyLTExMmw2LTJxNCAwIDEyNCA3MCA0IDMgNCA3IDAgMjUtNTEgMTM4IDE3IDIzIDMwIDUyIDE0OSAxNSAxNDkgMzF6bTAtMTAyNHYxNDBxMCAxNi0xNDkgMzEtMTIgMjctMzAgNTIgNTEgMTEzIDUxIDEzOCAwIDQtNCA3LTEyMiA3MS0xMjQgNzEtOCAwLTQ2LTQ3dC01Mi02OHEtMjAgMi0zMCAydC0zMC0ycS0xNCAyMS01MiA2OHQtNDYgNDdxLTIgMC0xMjQtNzEtNC0zLTQtNyAwLTI1IDUxLTEzOC0xOC0yNS0zMC01Mi0xNDktMTUtMTQ5LTMxdi0xNDBxMC0xNiAxNDktMzEgMTMtMjkgMzAtNTItNTEtMTEzLTUxLTEzOCAwLTQgNC03IDQtMiAzNS0yMHQ1OS0zNCAzMC0xNnE4IDAgNDYgNDYuNXQ1MiA2Ny41cTIwLTIgMzAtMnQzMCAycTUxLTcxIDkyLTExMmw2LTJxNCAwIDEyNCA3MCA0IDMgNCA3IDAgMjUtNTEgMTM4IDE3IDIzIDMwIDUyIDE0OSAxNSAxNDkgMzF6Ii8+PC9zdmc+');
+			top: .125em;
+			position: relative;
+		}
+
+		.bar-chart-icon {
+			width: 1.125em;
+			height: 1em;
+			background-size: cover;
+			background-repeat: no-repeat;
+			display: inline-block;
+			background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB3aWR0aD0iMjA0OCIgaGVpZ2h0PSIxNzkyIiB2aWV3Qm94PSIwIDAgMjA0OCAxNzkyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik02NDAgODk2djUxMmgtMjU2di01MTJoMjU2em0zODQtNTEydjEwMjRoLTI1NnYtMTAyNGgyNTZ6bTEwMjQgMTE1MnYxMjhoLTIwNDh2LTE1MzZoMTI4djE0MDhoMTkyMHptLTY0MC04OTZ2NzY4aC0yNTZ2LTc2OGgyNTZ6bTM4NC0zODR2MTE1MmgtMjU2di0xMTUyaDI1NnoiLz48L3N2Zz4=');
+			top: .125em;
+			position: relative;
+		}
+
+		.unlock-icon {
+			width: 1em;
+			height: 1em;
+			background-size: cover;
+			background-repeat: no-repeat;
+			display: inline-block;
+			background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxNzkyIiB2aWV3Qm94PSIwIDAgMTc5MiAxNzkyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xNzI4IDU3NnYyNTZxMCAyNi0xOSA0NXQtNDUgMTloLTY0cS0yNiAwLTQ1LTE5dC0xOS00NXYtMjU2cTAtMTA2LTc1LTE4MXQtMTgxLTc1LTE4MSA3NS03NSAxODF2MTkyaDk2cTQwIDAgNjggMjh0MjggNjh2NTc2cTAgNDAtMjggNjh0LTY4IDI4aC05NjBxLTQwIDAtNjgtMjh0LTI4LTY4di01NzZxMC00MCAyOC02OHQ2OC0yOGg2NzJ2LTE5MnEwLTE4NSAxMzEuNS0zMTYuNXQzMTYuNS0xMzEuNSAzMTYuNSAxMzEuNSAxMzEuNSAzMTYuNXoiLz48L3N2Zz4=');
+			top: .125em;
+			position: relative;
+		}
+
+		.database-icon {
+			width: 1em;
+			height: 1em;
+			background-size: cover;
+			background-repeat: no-repeat;
+			display: inline-block;
+			background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxNzkyIiB2aWV3Qm94PSIwIDAgMTc5MiAxNzkyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik04OTYgNzY4cTIzNyAwIDQ0My00M3QzMjUtMTI3djE3MHEwIDY5LTEwMyAxMjh0LTI4MCA5My41LTM4NSAzNC41LTM4NS0zNC41LTI4MC05My41LTEwMy0xMjh2LTE3MHExMTkgODQgMzI1IDEyN3Q0NDMgNDN6bTAgNzY4cTIzNyAwIDQ0My00M3QzMjUtMTI3djE3MHEwIDY5LTEwMyAxMjh0LTI4MCA5My41LTM4NSAzNC41LTM4NS0zNC41LTI4MC05My41LTEwMy0xMjh2LTE3MHExMTkgODQgMzI1IDEyN3Q0NDMgNDN6bTAtMzg0cTIzNyAwIDQ0My00M3QzMjUtMTI3djE3MHEwIDY5LTEwMyAxMjh0LTI4MCA5My41LTM4NSAzNC41LTM4NS0zNC41LTI4MC05My41LTEwMy0xMjh2LTE3MHExMTkgODQgMzI1IDEyN3Q0NDMgNDN6bTAtMTE1MnEyMDggMCAzODUgMzQuNXQyODAgOTMuNSAxMDMgMTI4djEyOHEwIDY5LTEwMyAxMjh0LTI4MCA5My41LTM4NSAzNC41LTM4NS0zNC41LTI4MC05My41LTEwMy0xMjh2LTEyOHEwLTY5IDEwMy0xMjh0MjgwLTkzLjUgMzg1LTM0LjV6Ii8+PC9zdmc+');
+			top: .125em;
+			position: relative;
+		}
+
+		.dollar-icon {
+			width: 1em;
+			height: 1em;
+			background-size: cover;
+			background-repeat: no-repeat;
+			display: inline-block;
+			background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxNzkyIiB2aWV3Qm94PSIwIDAgMTc5MiAxNzkyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xMzYyIDExODVxMCAxNTMtOTkuNSAyNjMuNXQtMjU4LjUgMTM2LjV2MTc1cTAgMTQtOSAyM3QtMjMgOWgtMTM1cS0xMyAwLTIyLjUtOS41dC05LjUtMjIuNXYtMTc1cS02Ni05LTEyNy41LTMxdC0xMDEuNS00NC41LTc0LTQ4LTQ2LjUtMzcuNS0xNy41LTE4cS0xNy0yMS0yLTQxbDEwMy0xMzVxNy0xMCAyMy0xMiAxNS0yIDI0IDlsMiAycTExMyA5OSAyNDMgMTI1IDM3IDggNzQgOCA4MSAwIDE0Mi41LTQzdDYxLjUtMTIycTAtMjgtMTUtNTN0LTMzLjUtNDItNTguNS0zNy41LTY2LTMyLTgwLTMyLjVxLTM5LTE2LTYxLjUtMjV0LTYxLjUtMjYuNS02Mi41LTMxLTU2LjUtMzUuNS01My41LTQyLjUtNDMuNS00OS0zNS41LTU4LTIxLTY2LjUtOC41LTc4cTAtMTM4IDk4LTI0MnQyNTUtMTM0di0xODBxMC0xMyA5LjUtMjIuNXQyMi41LTkuNWgxMzVxMTQgMCAyMyA5dDkgMjN2MTc2cTU3IDYgMTEwLjUgMjN0ODcgMzMuNSA2My41IDM3LjUgMzkgMjkgMTUgMTRxMTcgMTggNSAzOGwtODEgMTQ2cS04IDE1LTIzIDE2LTE0IDMtMjctNy0zLTMtMTQuNS0xMnQtMzktMjYuNS01OC41LTMyLTc0LjUtMjYtODUuNS0xMS41cS05NSAwLTE1NSA0M3QtNjAgMTExcTAgMjYgOC41IDQ4dDI5LjUgNDEuNSAzOS41IDMzIDU2IDMxIDYwLjUgMjcgNzAgMjcuNXE1MyAyMCA4MSAzMS41dDc2IDM1IDc1LjUgNDIuNSA2MiA1MCA1MyA2My41IDMxLjUgNzYuNSAxMyA5NHoiLz48L3N2Zz4=');
+			top: .125em;
+			position: relative;
+		}
+	</style>
+
+    {% block extra_head %}
+    {% endblock %}
+  </head>
+  <body>
+	<div class="navbar-wrapper">
+		{% block navbar %}
+		<div class="container">
+		  <nav class="navbar navbar-default">
+			<div class="container-fluid">
+                    {% comment %}
+                    don't show anything dynamic on cached pages
+                    {% endcomment %}
+                    {% if user.is_authenticated and not cached_view %}
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{% url 'dashboard' %}">Opsgrid</a>
+                    </div>
+                    {% else %}
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/">Opsgrid</a>
+                    </div>
+                    {% endif %}
+
+                    {% if user.is_authenticated and not cached_view %}
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'dashboard' %}">Home</a></li>
+                    </ul>
+    {% comment %}
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'user-hlist' %}">Settings</a></li>
+                    </ul>
+    {% endcomment %}
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'account_logout' %}?next=/">Log Out</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><p class="navbar-text"><i class="user-icon"></i> <a href="{% url 'account_email' %}">{{ user.username }}</a></p></li>
+                    </ul>
+                    {% else %}
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'account_login' %}">Log In</a></li>
+                    </ul>
+                    {% endif %}
+            </div>
+		  </nav>
+		</div>
+		{% endblock navbar %}
+	</div>
+
+	<div id="header">
+		{% block header %}
+		{% endblock header %}
+	</div>
+
+	<div id="content" class="container">
+		{% block body %}
+		{% endblock body %}
+		{% block content %}
+		{% endblock content %}
+		{% block extra_body %}
+		{% endblock %}
+	</div>
+
+	<div id="footer" class="container">
+		<footer class="footer text-center" style="padding-bottom: 25px;">
+			{% block footer %}
+			<hr>
+            <a href="{% url 'docs' %}">docs</a>
+			|
+            <a href="{% url 'privacy' %}">privacy</a>
+			|
+            <a href="{% url 'terms' %}">terms</a>
+			|
+			<a href="https://simonmweber.com">author</a>
+			<br/>
+			Feel free to email <a href="mailto:simon@opsgrid.net" target="_blank" rel="noopener noreferrer">simon@opsgrid.net</a>
+      with any questions or comments.
+			{% endblock footer %}
+		</footer>
+	</div>
+  </body>
+  {% block post_body %}
+  {% endblock %}
+</html>

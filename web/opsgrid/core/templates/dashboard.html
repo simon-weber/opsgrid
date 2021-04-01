@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block content %}
+{% url 'dashboard' as dashboard_url %}
+{% if not socialaccounts and not hosts %}
+<h1>Setup step 1 of 2: link an account</h1>
+<p>
+To allow Opsgrid to create and update your host spreadsheets, start by
+<a href="{% provider_login_url 'google' process='connect' next=dashboard_url %}">linking a Google account</a>.
+</p>
+<p>
+This also creates an account token to identify the account.
+</p>
+
+{% elif not hosts %}
+<h1>Setup step 2 of 2: set up a host</h1>
+<p>
+Start sending metrics by <a href="{% url 'host-setup' %}">setting up a host</a>.
+</p>
+
+{% else %}
+<div class="row">
+    <div class="col-md-1">
+    </div>
+    <div class="col-md-5">
+      <h2>Hosts</h2>
+      <ul>
+        {% for host in hosts %}
+        <li>
+          {{ host.name }} (<a target="_blank" href="https://docs.google.com/spreadsheets/d/{{ host.spreadsheet_id }}/edit#gid=0">spreadsheet</a>)
+        </li>
+        {% endfor %}
+      </ul>
+      <a class="btn btn-primary" href="{% url 'host-setup' %}">Set up a host</a>
+
+    </div>
+    <div class="col-md-5">
+      <h2>Alerts</h2>
+      <ul>
+        {% for alert in alerts %}
+        <li>
+          {{alert.host.name }} "{{ alert.name }}": {{ alert.status }}
+        </li>
+        {% endfor %}
+      </ul>
+      <a class="btn btn-primary" href="{% url 'alert-hlist' %}">Configure alerts</a>
+    </div>
+    <div class="col-md-1">
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock content %}

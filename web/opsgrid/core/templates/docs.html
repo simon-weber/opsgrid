@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <h1>Documentation</h1>
+        <h4><a href="#sheet-creation">How spreadsheets are created and updated</a></h4>
+        <h4><a href="#changing-sheets">Safely changing existing sheets</a></h4>
+        <h4><a href="#column-names">Column name generation</a></h4>
+        <h4><a href="#historical-alerting">Alerting on historical data</a></h4>
+        <h4><a href="#sheets-dashboards">Making dashboards in Google Sheets</a></h4>
+    </div>
+    <div class="row">
+        <h3 id="sheet-creation">How Spreadsheets are created and updated</h3>
+        <p>
+        Each time Opsgrid receives metrics, it will create or update a top-level folder called "opsgrid" and a Spreadsheet named after the Telegraf host.
+        You can delete the folder or spreadsheets at any time, but they will be recreated as long as you send metrics to Opsgrid.
+        </p>
+        <p>
+        Before writing metrics to a sheet, Opsgrid resizes the grid to maximize retention.
+        Currently, it uses a static value of 4 million of the 5 million limit imposed by Google.
+        For example, with 10 columns the sheet will be sized to 4 million / 10 == 400,000 rows.
+        </p>
+        <p>
+        Rows are written circularly once the sheet is full (to limit slow row additions/removals).
+        This means the most recent row is not always at the top of the sheet.
+        For an easy view into your most recent data, use <a href="https://docs.google.com/spreadsheets/d/1llE3E2NnMOvA--Zhb4mpPqMroFoGzfJhwnVuN9ZDOyI/edit#gid=1762959356">the demo sheet</a> as an example;
+        it has notes on cells A1 and A2 explaining how to recreate it.
+        </p>
+        <p>
+        Adding metrics will automatically append new columns and resize the sheet to maintain the cell limit.
+        Rows are removed oldest-first if you are already at the cell limit.
+        </p>
+    </div>
+    <div class="row">
+        <h3 id="changing-sheets">Safely changing existing sheets</h3>
+        <p>
+        Opsgrid only operates on the first sheet in a spreadsheet (called "opsgrid").
+        Feel free to create other sheets to process your data.
+        </p>
+        <p>
+        If you need to change the opsgrid sheet, most changes that don't affect the number of rows are safe.
+        For example, you can reorder or delete columns without affecting Opsgrid's behavior.
+        </p>
+    </div>
+    <div class="row">
+        <h3 id="column-names">Column name generation</h3>
+        <p>
+        Telegraf often uses input tags to signify what a metric applies to.
+        To fit these into a 2d format, Opsgrid combines tags to form a column header.
+        This is done by ordering the tags and joining their values with ":", then appending the result to the input and field name.
+        </p>
+        <p>
+        For example, <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/disk#metrics">the disk input</a> has four tags: device, fstype, mode, and path.
+        With a typical root mount this might generate a column header like "disk:free:sda1:ext4:rw:/".
+        </p>
+        <p>
+        You're encouraged to use settings like <a href="https://github.com/influxdata/telegraf/blob/3278054c5ce9a7eecb77a89a67dbe124d79367a3/docs/CONFIGURATION.md#using-taginclude-and-tagexclude">taginclude</a> in your Telegraf config to control what tags end up in your headers.
+        </p>
+    </div>
+    <div class="row">
+        <h3 id="historical-alerting">Alerting on historical data</h3>
+        <p>
+        Opsgrid only considers a single row of metrics when processing alerts.
+        Still, it's possible to alert on values like "average cpu over the past 10 minutes" by using <a href="https://github.com/influxdata/telegraf#aggregator-plugins">aggregator plugins</a> such as <a href="https://github.com/influxdata/telegraf/tree/master/plugins/aggregators/basicstats">basicstats</a>.
+        Each of the aggregated values will be treated as a normal metric by Opsgrid, getting its own column and showing up when configuring alerts.
+        </p>
+    </div>
+    <div class="row">
+        <h3 id="sheets-dashboards">Making dashboards in Google Sheets</h3>
+        <p>
+        You can make live graphs of your metrics right in Google Sheets.
+        Here's the recommended way to do this:
+        <ul>
+          <li>make a new sheet within your spreadsheet</li>
+          <li>set up that sheet to track the most recent x rows from the opsgrid sheet</li>
+          <li>make a column that parses timestamps to a Google Sheets datetime</li>
+          <li>use timeline charts to track metrics you're interested in</li>
+        </ul>
+        </p>
+        <p>
+        There's a live example of this setup available <a href="https://docs.google.com/spreadsheets/d/1llE3E2NnMOvA--Zhb4mpPqMroFoGzfJhwnVuN9ZDOyI/edit#gid=1549159907">here</a>.
+        Click on cells B1, A2, and B2 to see notes explaining how to replicate it.
+        </p>
+    </div>
+</div>
+{% endblock content%}
